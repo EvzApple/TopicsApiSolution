@@ -48,7 +48,7 @@ public class EFSqlTopicsData : IProvideTopicsData
     {
         var data = await GetTopics()
             .Where(t => t.Id == topicId)
-            .ProjectTo<GetTopicListItemModel>(_config)
+            .ProjectTo<GetTopicListItemModel>(_config) //this line used to be commented out line 39
             .SingleOrDefaultAsync();
 
         return data switch
