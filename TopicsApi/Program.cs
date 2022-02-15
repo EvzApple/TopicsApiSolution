@@ -7,6 +7,16 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors(config => //this sets up rules for CORS 
+{
+    config.AddDefaultPolicy(pol =>
+    {
+        pol.AllowAnyOrigin();
+        pol.AllowAnyMethod();
+        pol.AllowAnyHeader(); //You can't allow this AND AllowCredentials
+    });
+});
+
 builder.Services.AddTransient<ILookupOnCallDevelopers, FakeDeveloperLookup>();
 builder.Services.AddScoped<IProvideTopicsData, EFSqlTopicsData>();
 
@@ -18,6 +28,8 @@ builder.Services.AddDbContext<TopicsDataContext>(options =>
 
 //building the actual application 
 var app = builder.Build();
+
+app.UseCors(); //handles the OPTIONS request from browsers by using the services we set above 
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

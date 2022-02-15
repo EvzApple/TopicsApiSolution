@@ -14,3 +14,4 @@
 public record GetTopicListItemModel(string id, string name, string description);
 
 public record GetTopicsModel(IEnumerable<GetTopicListItemModel> data);
+public record PostTopicRequestModel(string name, string description);
