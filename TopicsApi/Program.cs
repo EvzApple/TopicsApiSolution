@@ -1,5 +1,7 @@
 using AutoMapper;
 using TopicsApi.AutomapperProfiles;
+using Microsoft.Extensions.Http;
+using TopicsApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,7 +32,17 @@ builder.Services.AddCors(config => //this sets up rules for CORS
     });
 });
 
-builder.Services.AddTransient<ILookupOnCallDevelopers, FakeDeveloperLookup>();
+builder.Services.AddTransient<ILookupOnCallDevelopers, RPCDeveloperLookup>();
+builder.Services.AddHttpClient<OnCallApiHttpClient>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("on-call-developer-api"));
+    client.DefaultRequestHeaders.Add("User-Agent", "Topics Api");
+    client.DefaultRequestHeaders.Add("Accept", "application/json");
+}).AddPolicyHandler(
+    HttpPolicies.GetDefaultRetryPolicy())
+    .AddPolicyHandler(
+    HttpPolicies.GetCircuitBreakerPolicy());
+
 
 var mapperConfig = new MapperConfiguration(opts =>
 {

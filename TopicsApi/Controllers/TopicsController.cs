@@ -1,6 +1,7 @@
 ﻿namespace TopicsApi.Controllers;
 
 [ApiController]
+[Produces("application/json")]
 public class TopicsController : ControllerBase
 {
     //private readonly TopicsDataContext _context;

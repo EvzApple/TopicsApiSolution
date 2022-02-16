@@ -14,23 +14,21 @@ namespace TopicsApi.Models;
 */
 
 public record TopicListItemModel(
-    //[property:Required]
-    string id, 
-    //[property:Required]
-    //[property:MaxLength(10)]
+    [property:Required]
+    string id,
+    [property: Required]
+    [property: MaxLength(10)]
     string name,
-    //[property: Required]
+    [property: Required]
     string description);
 
 public record GetTopicsModel(IEnumerable<TopicListItemModel> data);
 public record PostTopicRequestModel(
-    [property:Required]
-    [property:MinLength(3)]
-    [property:MaxLength(20)]
+    [MinLength(3)]
+    [MaxLength(20)]
     string name,
-    [property:Required]
-    [property:MinLength(1)]
-    [property:MaxLength(200)]
+    [MinLength(1)]
+    [MaxLength(200)]
     string description);
 
 //public record PostTopicRequestModel : IValidatableObject
