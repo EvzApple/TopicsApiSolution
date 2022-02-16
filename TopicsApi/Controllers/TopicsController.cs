@@ -17,6 +17,33 @@ public class TopicsController : ControllerBase
         _topicsData = topicsData;
     }
 
+    [HttpPut("topics/{id:int}")]
+    public async Task<IActionResult> ReplaceTopicAsync(int id, [FromBody] TopicListItemModel request)
+    {
+        if (id != int.Parse(request.id))
+        {
+            return BadRequest("Topic does not exist");
+        }
+        else
+        {
+            Maybe response = await _topicsData.ReplaceAsync(id, request);
+
+            return response.hasValue switch
+            {
+                true => NoContent(),
+                false => NotFound()
+            };
+        }
+    }
+
+    [HttpDelete("topics/{id:int}")]
+    public async Task<IActionResult> RemoveTopicAsync(int id)
+    {
+        await _topicsData.RemoveAsync(id);
+
+        return NoContent();
+    }
+
     [HttpPost("topics")]
     public async Task<ActionResult> AddTopicAsync([FromBody] PostTopicRequestModel request)
     {
@@ -35,17 +62,17 @@ public class TopicsController : ControllerBase
         // Maybe just give them a copy of what they'd get from that URI
         //201 SHOULD have a Location Header and a copy of the object that was created 
 
-        GetTopicListItemModel response = await _topicsData.AddTopicAsync(request);
+        TopicListItemModel response = await _topicsData.AddTopicAsync(request);
 
-        return CreatedAtRoute("topics.getbyidasync", new { topicId = response.id }, response); 
+        return CreatedAtRoute("topics.getbyidasync", new { topicId = response.id }, response);
     }
 
     //NOTE: this is not needed for application - for reference only 
     //GET /topics/99 => 200 with that document or 404 
-    [HttpGet("topics/{topicId:int}", Name ="topics.getbyidasync")]
+    [HttpGet("topics/{topicId:int}", Name = "topics.getbyidasync")]
     public async Task<ActionResult> GetTopicbyIdAsync(int topicId)
     {
-        Maybe<GetTopicListItemModel> response = await _topicsData.GetTopicByIdAsync(topicId);
+        Maybe<TopicListItemModel> response = await _topicsData.GetTopicByIdAsync(topicId);
         //if (response == null)
         //{
         //    return NotFound();
